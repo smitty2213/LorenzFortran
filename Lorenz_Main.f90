@@ -30,7 +30,7 @@ PROGRAM LorenzEquationsMain
 !        -------            ----------          ----------          --------------          ---------------------
 !           1               Nicolas Smith        02/20/26                                   Creating code from scratch, setup the Runge-Kutta 4 to anaylze the
 !                                                                                           Lornez System and output the data to a CSV file.            
-
+    USE rk4_mod
     IMPLICIT none
 
 ! State of the system variables
@@ -54,7 +54,7 @@ PROGRAM LorenzEquationsMain
     t0 = 0          ! Inital time
     tf = 200        ! Final time
     step_size = 0.1 ! Size of each step
-    nsteps = INT((tf - t0) / step_size)         ! Number of steps to take
+    nsteps = NINT((tf - t0) / step_size)         ! Number of steps to take
 
     sigma = 10.0
     rho = 28.0
@@ -64,10 +64,11 @@ PROGRAM LorenzEquationsMain
     y = y0 
     z = z0
     t = t0
-
+WRITE(*,*) "Inital x,y,z=", x,y,z
 ! RK4_Loop is used to update the state of the system and output the updates to a CSV file
     RK4_Loop: DO rk4_index = 0, nsteps
-
+        CALL rk4_step(x, y, z, step_size, sigma, rho, beta)
+        WRITE(*,*) x,y,z
     END DO RK4_Loop
 
     
