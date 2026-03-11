@@ -46,6 +46,8 @@ PROGRAM LorenzEquationsMain
     REAL :: step_size       ! Size of each step
 ! Loop Control
     INTEGER :: rk4_index    ! Used to loop index for RK4
+! File Control
+    INTEGER :: u            ! Used to open csv file
 ! Declare Inital Conditions
     x0 = 1.0        ! Inital x position
     y0 = 1.0        ! Inital y position
@@ -53,7 +55,7 @@ PROGRAM LorenzEquationsMain
 
     t0 = 0          ! Inital time
     tf = 200        ! Final time
-    step_size = 0.1 ! Size of each step
+    step_size = 0.01 ! Size of each step
     nsteps = NINT((tf - t0) / step_size)         ! Number of steps to take
 
     sigma = 10.0
@@ -64,12 +66,25 @@ PROGRAM LorenzEquationsMain
     y = y0 
     z = z0
     t = t0
-WRITE(*,*) "Inital x,y,z=", x,y,z
+
+! Open CSV
+    OPEN(newunit=u, file="lorenz_traj.csv", status="replace", action="write" )
+! Write CSV Header
+    WRITE(u, '(A, 1x, G0, A, 1x, G0, A, 1x, G0)') &
+    & "# sigma = ", sigma, ", rho =", rho, ", beta =", beta
+    WRITE(u, '(A, 1x, G0, A, 1x, G0, A, 1x, G0)') "# t0 =", t0, ", tf =", tf, ", step_size =", step_size 
+    WRITE(u, '(A)') "t,x,y,z"
+
+! Write inital t, x, y, z before loop
+    WRITE(u, '(F12.6, ",", ES16.8, ",", ES16.8, ",", ES16.8)') t, x, y,z        ! Write inital values
 ! RK4_Loop is used to update the state of the system and output the updates to a CSV file
-    RK4_Loop: DO rk4_index = 0, nsteps
+    RK4_Loop: DO rk4_index = 1, nsteps
         CALL rk4_step(x, y, z, step_size, sigma, rho, beta)
-        WRITE(*,*) x,y,z
+        t = t + step_size
+        WRITE(u, '(F12.6, ",", ES16.8, ",", ES16.8, ",", ES16.8)') t, x, y,z
     END DO RK4_Loop
+
+    CLOSE(u)        ! Close file
 
     
 END PROGRAM LorenzEquationsMain

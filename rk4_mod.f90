@@ -31,8 +31,8 @@ CONTAINS
 
         ! Calculate k3
         x3 = x + (k2x * (h/2.0))
-        y3 = y + (k1y * (h/2.0))
-        z3 = z + (k1z * (h/2.0))
+        y3 = y + (k2y * (h/2.0))
+        z3 = z + (k2z * (h/2.0))
 
         CALL lorenz_rhs(x3, y3, z3, sigma, rho, beta, k3x, k3y, k3z)
 
